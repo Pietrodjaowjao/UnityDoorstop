@@ -120,6 +120,14 @@ There are two ways to configure Doorstop: via config and CLI arguments.
 
 Refer to [`doorstop_config.ini`](assets/windows/doorstop_config.ini) (Windows) or [`run.sh`](assets/nix/run.sh) for all available configuration options.
 
+On Windows, entries under the optional `[Environment]` section are set in the
+current game process before the Unity runtime starts. They do not modify the system environment:
+
+```ini
+[Environment]
+GC_DISABLE_INCREMENTAL=1
+```
+
 ### CLI arguments
 
 The following CLI arguments are available on both *nix, and Windows builds:

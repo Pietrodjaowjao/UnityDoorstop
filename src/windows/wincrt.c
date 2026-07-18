@@ -92,9 +92,9 @@ void *fopen(char_t *filename, const char_t *mode) {
 }
 
 size_t fread(void *ptr, size_t size, size_t count, void *stream) {
-    size_t read_size = 0;
-    ReadFile(stream, ptr, size * count, &read_size, NULL);
-    return read_size;
+    DWORD read_size = 0;
+    ReadFile(stream, ptr, (DWORD)(size * count), &read_size, NULL);
+    return (size_t)read_size;
 }
 
 int fclose(void *stream) { CloseHandle(stream); }

@@ -57,7 +57,7 @@ void mono_doorstop_bootstrap(void *mono_domain) {
     free(norm_assembly_dir);
 
     LOG("Opening assembly: %s", config.target_assembly);
-    void *file = fopen(config.target_assembly, "r");
+    void *file = fopen(config.target_assembly, TEXT("r"));
     if (!file) {
         LOG("Failed to open assembly: %s", config.target_assembly);
         return;
@@ -315,6 +315,7 @@ int init_il2cpp(const char *domain_name) {
     char_t *domain_name_w = widen(domain_name);
     LOG("Starting IL2CPP domain \"%s\"", domain_name_w);
     free(domain_name_w);
+
     const int orig_result = il2cpp.init(domain_name);
     il2cpp_doorstop_bootstrap();
     return orig_result;
@@ -396,7 +397,7 @@ void *hook_mono_image_open_from_data_with_name(void *data,
         strcat(new_full_path, name_file);
 
         if (file_exists(new_full_path)) {
-            void *file = fopen(new_full_path, "r");
+            void *file = fopen(new_full_path, TEXT("r"));
             size_t size = get_file_size(file);
             void *buf = malloc(size);
             fread(buf, 1, size, file);

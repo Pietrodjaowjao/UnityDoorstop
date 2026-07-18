@@ -57,6 +57,36 @@ void load_path_file(const char_t *path, const char_t *section,
     free(tmp);
 }
 
+static void load_environment_file(const char_t *path) {
+    DWORD size = MAX_PATH + 1;
+    DWORD read;
+    char_t *entries = NULL;
+
+    do {
+        if (entries)
+            free(entries);
+        size *= 2;
+        entries = calloc(size, sizeof(char_t));
+        read = GetPrivateProfileSection(TEXT("Environment"), entries, size,
+                                        path);
+    } while (read == size - 2);
+
+    for (char_t *entry = entries; *entry; entry += strlen(entry) + 1) {
+        char_t *separator = entry;
+        while (*separator && *separator != TEXT('='))
+            separator++;
+
+        if (separator == entry || !*separator)
+            continue;
+
+        *separator = TEXT('\0');
+        setenv(entry, separator + 1, TRUE);
+        LOG("CONFIG: Set process environment variable %s", entry);
+    }
+
+    free(entries);
+}
+
 static inline void init_config_file() {
     if (!file_exists(CONFIG_NAME))
         return;
@@ -88,6 +118,8 @@ static inline void init_config_file() {
                    &config.clr_runtime_coreclr_path);
     load_path_file(config_path, TEXT("Il2Cpp"), TEXT("corlib_dir"), NULL,
                    &config.clr_corlib_dir);
+
+    load_environment_file(config_path);
 
     free(config_path);
 }

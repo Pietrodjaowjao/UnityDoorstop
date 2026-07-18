@@ -22,7 +22,7 @@ function add_proxydef(load_events)
                                  "__%s__ = GetProcAddress((HMODULE)dll, \"%s\");\r\n",
                                  func, func)
             proxy_funcs = proxy_funcs ..
-                              format("void *exp_%s() { return __%s__(); }",
+                              format("INT_PTR exp_%s() { return __%s__(); }",
                                      func, func) .. "\r\n"
             exports_funcs =
                 exports_funcs .. format("%s = exp_%s", func, func) .. "\r\n"
